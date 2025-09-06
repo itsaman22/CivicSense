@@ -1,0 +1,150 @@
+/* 
+🎨 CivicSense Design System - Simple & Professional
+Perfect for civic/government projects - trustworthy, accessible, clean
+*/
+
+:root {
+  /* 🔥 Primary Colors - Trust & Authority */
+  --primary-blue: #2563eb;      /* Main brand color */
+  --primary-blue-hover: #1d4ed8;
+  --primary-blue-light: #dbeafe;
+  --primary-blue-dark: #1e40af;
+
+  /* 🟢 Success & Action */
+  --success-green: #059669;     /* Resolved issues */
+  --success-green-light: #d1fae5;
+  --action-green: #10b981;      /* CTA buttons */
+
+  /* ⚠️ Warning & Alert */
+  --warning-orange: #f59e0b;    /* In progress */
+  --warning-orange-light: #fef3c7;
+  --alert-red: #dc2626;         /* Urgent/High priority */
+  --alert-red-light: #fef2f2;
+
+  /* 🌫️ Neutrals - Clean & Professional */
+  --white: #ffffff;
+  --gray-50: #f9fafb;          /* Light background */
+  --gray-100: #f3f4f6;         /* Card backgrounds */
+  --gray-200: #e5e7eb;         /* Borders */
+  --gray-300: #d1d5db;         /* Disabled */
+  --gray-400: #9ca3af;         /* Placeholder text */
+  --gray-500: #6b7280;         /* Secondary text */
+  --gray-600: #4b5563;         /* Body text */
+  --gray-700: #374151;         /* Headings */
+  --gray-800: #1f2937;         /* Dark text */
+  --gray-900: #111827;         /* Darkest */
+
+  /* 🏛️ Government Inspired */
+  --civic-orange: #fb923c;      /* Traffic cones, road work */
+  --civic-blue: #0ea5e9;       /* Public services */
+  --civic-teal: #14b8a6;       /* Environment */
+  
+  /* 📊 Status Colors */
+  --status-open: #3b82f6;      /* Blue - Open issues */
+  --status-progress: #f59e0b;   /* Orange - In progress */
+  --status-resolved: #059669;   /* Green - Resolved */
+  --status-closed: #6b7280;     /* Gray - Closed */
+
+  /* 🎯 Category Colors */
+  --category-infrastructure: #ef4444;    /* Red - Roads, bridges */
+  --category-transport: #f97316;         /* Orange - Traffic, buses */
+  --category-environment: #22c55e;       /* Green - Waste, pollution */
+  --category-safety: #3b82f6;           /* Blue - Lights, security */
+  --category-health: #ec4899;           /* Pink - Healthcare */
+  --category-other: #8b5cf6;            /* Purple - Miscellaneous */
+}
+
+/* 📝 Typography Scale */
+:root {
+  --font-family-primary: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  --font-family-heading: 'Inter', 'Segoe UI', sans-serif;
+  
+  --text-xs: 0.75rem;     /* 12px */
+  --text-sm: 0.875rem;    /* 14px */
+  --text-base: 1rem;      /* 16px */
+  --text-lg: 1.125rem;    /* 18px */
+  --text-xl: 1.25rem;     /* 20px */
+  --text-2xl: 1.5rem;     /* 24px */
+  --text-3xl: 1.875rem;   /* 30px */
+  --text-4xl: 2.25rem;    /* 36px */
+  --text-5xl: 3rem;       /* 48px */
+}
+
+/* 🔲 Spacing System */
+:root {
+  --space-1: 0.25rem;     /* 4px */
+  --space-2: 0.5rem;      /* 8px */
+  --space-3: 0.75rem;     /* 12px */
+  --space-4: 1rem;        /* 16px */
+  --space-5: 1.25rem;     /* 20px */
+  --space-6: 1.5rem;      /* 24px */
+  --space-8: 2rem;        /* 32px */
+  --space-10: 2.5rem;     /* 40px */
+  --space-12: 3rem;       /* 48px */
+  --space-16: 4rem;       /* 64px */
+  --space-20: 5rem;       /* 80px */
+}
+
+/* 🎭 Shadows & Effects */
+:root {
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  
+  --border-radius: 0.5rem;    /* 8px */
+  --border-radius-sm: 0.25rem; /* 4px */
+  --border-radius-lg: 0.75rem; /* 12px */
+}
+
+/* 🎨 Quick Color Classes */
+.bg-primary { background-color: var(--primary-blue); }
+.bg-success { background-color: var(--success-green); }
+.bg-warning { background-color: var(--warning-orange); }
+.bg-danger { background-color: var(--alert-red); }
+
+.text-primary { color: var(--primary-blue); }
+.text-success { color: var(--success-green); }
+.text-warning { color: var(--warning-orange); }
+.text-danger { color: var(--alert-red); }
+.text-muted { color: var(--gray-500); }
+
+/* 📱 Responsive Breakpoints */
+:root {
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+}
+
+/*
+🏗️ USAGE EXAMPLES:
+
+Background Colors:
+- Primary actions: var(--primary-blue)
+- Success states: var(--success-green)
+- Warning states: var(--warning-orange)
+- Danger/Error: var(--alert-red)
+- Page background: var(--gray-50)
+- Card background: var(--white)
+
+Text Colors:
+- Headings: var(--gray-800)
+- Body text: var(--gray-600)
+- Muted text: var(--gray-500)
+- Links: var(--primary-blue)
+
+Issue Categories:
+- Roads/Infrastructure: var(--category-infrastructure)
+- Transportation: var(--category-transport)
+- Environment: var(--category-environment)
+- Safety: var(--category-safety)
+- Health: var(--category-health)
+- Other: var(--category-other)
+
+Status Colors:
+- Open: var(--status-open)
+- In Progress: var(--status-progress)  
+- Resolved: var(--status-resolved)
+- Closed: var(--status-closed)
+*/
