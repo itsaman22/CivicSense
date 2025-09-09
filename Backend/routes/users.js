@@ -1,23 +1,9 @@
+// 👥 Users Routes - MongoDB Atlas Version
 const express = require('express');
-const router = express.Router();
+const User = require('../models/User'); // Import User model
+const { checkLogin, checkAdmin } = require('../middleware/auth');
 
-// Simple array to store users
-let users = [
-  {
-    id: 1,
-    email: 'admin@civic.com',
-    password: 'admin123',
-    name: 'Admin User',
-    role: 'admin'
-  },
-  {
-    id: 2,
-    email: 'user@civic.com',
-    password: 'user123',
-    name: 'John Doe',
-    role: 'user'
-  }
-];
+const router = express.Router();
 
 // Get all users
 router.get('/', (req, res) => {

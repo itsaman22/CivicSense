@@ -2,32 +2,31 @@ import React, { useState } from 'react';
 import './HomePage.css';
 import Auth from './Auth';
 
-const HomePage = () => {
+const HomePage = ({ user, onLoginSuccess, onLogout, onNavigateToDashboard }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showAuth, setShowAuth] = useState(false);
-  const [user, setUser] = useState(null);
 
   // Handle authentication success
-  const handleAuthSuccess = (userData) => {
-    setUser(userData.user);
+  const handleAuthSuccess = (userData, token) => {
+    setShowAuth(false); // Close auth modal
+    onLoginSuccess(userData.user, token); // Pass to App component
     console.log('User logged in:', userData);
   };
 
-  // Handle logout
-  const handleLogout = () => {
-    setUser(null);
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-  };
-
-  // Check if user is logged in on component mount
-  React.useEffect(() => {
-    const token = localStorage.getItem('token');
-    const userData = localStorage.getItem('user');
-    if (token && userData) {
-      setUser(JSON.parse(userData));
+  // Handle navigation to dashboard
+  const handleNavigateToDashboard = () => {
+    if (user) {
+      // This will be handled by the parent App component
+      if (onNavigateToDashboard) {
+        onNavigateToDashboard();
+      } else {
+        // For now, we'll just refresh the page to trigger the dashboard render
+        window.location.reload();
+      }
+    } else {
+      setShowAuth(true);
     }
-  }, []);
+  };
 
   // Civic issues data based on your requirements
   const civicIssues = [
@@ -131,8 +130,15 @@ const HomePage = () => {
                   <span className="welcome-text">
                     Welcome, {user.name}! 
                     {user.role === 'admin' && <span className="admin-badge">🏛️ Admin</span>}
+                    {user.role === 'user' && <span className="user-badge">👤 User</span>}
                   </span>
-                  <button className="btn btn-outline" onClick={handleLogout}>
+                  <button 
+                    className="btn btn-outline" 
+                    onClick={handleNavigateToDashboard}
+                  >
+                    Dashboard
+                  </button>
+                  <button className="btn btn-outline" onClick={onLogout}>
                     Logout
                   </button>
                 </div>
@@ -177,15 +183,15 @@ const HomePage = () => {
               <div className="hero-actions">
                 <button 
                   className="btn btn-primary btn-lg"
-                  onClick={() => user ? console.log('Go to report') : setShowAuth(true)}
+                  onClick={handleNavigateToDashboard}
                 >
                   🚨 Report Issue
                 </button>
                 <button 
                   className="btn btn-outline btn-lg"
-                  onClick={() => user ? console.log('Go to dashboard') : setShowAuth(true)}
+                  onClick={handleNavigateToDashboard}
                 >
-                  📊 Track Progress
+                  📊 {user ? 'Go to Dashboard' : 'Track Progress'}
                 </button>
               </div>
               <div className="hero-stats">

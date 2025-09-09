@@ -92,7 +92,7 @@ const Auth = ({ show, onHide, onLogin }) => {
             })
           };
 
-      const response = await fetch(`http://localhost:5000${endpoint}`, {
+      const response = await fetch(endpoint, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -103,16 +103,20 @@ const Auth = ({ show, onHide, onLogin }) => {
       const data = await response.json();
 
       if (data.success) {
+        console.log('✅ Login successful:', data); // Debug log
         setMessage({ type: 'success', text: data.message });
         if (data.data?.token) {
-          localStorage.setItem('token', data.data.token);
-          localStorage.setItem('user', JSON.stringify(data.data.user));
+          console.log('💾 Storing token and user data:', data.data); // Debug log
+          localStorage.setItem('authToken', data.data.token); // Use 'authToken' key
+          localStorage.setItem('userData', JSON.stringify(data.data.user)); // Use 'userData' key
           setTimeout(() => {
-            onLogin(data.data);
+            console.log('📤 Calling onLogin callback'); // Debug log
+            onLogin(data.data, data.data.token); // Pass token as second parameter
             onHide();
           }, 1500);
         }
       } else {
+        console.log('❌ Login failed:', data.message); // Debug log
         setMessage({ type: 'error', text: data.message });
       }
     } catch (error) {

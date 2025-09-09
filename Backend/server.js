@@ -1,8 +1,16 @@
+// 🚀 CivicSense API Server - MongoDB Atlas Version
 const express = require('express');
 const cors = require('cors');
+require('dotenv').config(); // Load environment variables
+
+// Import database connection
+const connectDatabase = require('./config/database');
 
 const app = express();
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
+
+// 📡 Connect to MongoDB Atlas
+connectDatabase();
 
 // Middleware
 app.use(cors());

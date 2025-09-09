@@ -1,106 +1,126 @@
+// 🔐 Authentication Routes - MongoDB Atlas Version
 const express = require('express');
+const bcrypt = require('bcryptjs'); // For password hashing
+const jwt = require('jsonwebtoken'); // For creating tokens
+const User = require('../models/User'); // Import User model
+
 const router = express.Router();
 
-// Simple array to store users (like a simple database)
-let users = [
-  {
-    id: 1,
-    email: 'admin@civic.com',
-    password: 'admin123',
-    name: 'Admin User',
-    role: 'admin',
-    department: 'Municipal Corporation',
-    location: null
-  },
-  {
-    id: 2,
-    email: 'user@civic.com', 
-    password: 'user123',
-    name: 'John Doe',
-    role: 'user',
-    department: null,
-    location: 'Delhi'
-  }
-];
+// 📝 Register new user
+router.post('/register', async (req, res) => {
+  try {
+    const { email, password, name, userType, department, location } = req.body;
 
-// Register new user
-router.post('/register', (req, res) => {
-  const { email, password, name, userType, department, location } = req.body;
+    // Check if user already exists
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.json({
+        success: false,
+        message: 'User already exists with this email'
+      });
+    }
 
-  // Check if user already exists
-  const existingUser = users.find(user => user.email === email);
-  if (existingUser) {
-    return res.json({
+    // Hash password for security
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Create new user
+    const newUser = new User({
+      email: email,
+      password: hashedPassword,
+      name: name,
+      userType: userType || 'user', // Use userType to match model
+      department: department || null, // for admin users
+      location: location || null // for regular users
+    });
+
+    // Save user to database
+    const savedUser = await newUser.save();
+
+    // Create JWT token
+    const token = jwt.sign(
+      { userId: savedUser._id, email: savedUser.email },
+      process.env.JWT_SECRET,
+      { expiresIn: '7d' }
+    );
+
+    res.json({
+      success: true,
+      message: 'Registration successful',
+      data: {
+        user: {
+          id: savedUser._id,
+          email: savedUser.email,
+          name: savedUser.name,
+          role: savedUser.userType, // Use userType from model
+          department: savedUser.department,
+          location: savedUser.location
+        },
+        token: token
+      }
+    });
+
+  } catch (error) {
+    console.error('Registration error:', error);
+    res.status(500).json({
       success: false,
-      message: 'User already exists with this email'
+      message: 'Server error during registration'
     });
   }
-
-  // Create new user
-  const newUser = {
-    id: users.length + 1,
-    email: email,
-    password: password,
-    name: name,
-    role: userType || 'user', // admin or user
-    department: department || null, // for admin users
-    location: location || null // for regular users
-  };
-
-  users.push(newUser);
-
-  // Create simple token
-  const token = 'token_' + Date.now() + '_' + newUser.id;
-
-  res.json({
-    success: true,
-    message: 'Registration successful',
-    data: {
-      user: {
-        id: newUser.id,
-        email: newUser.email,
-        name: newUser.name,
-        role: newUser.role,
-        department: newUser.department,
-        location: newUser.location
-      },
-      token: token
-    }
-  });
 });
 
-// Login user
-router.post('/login', (req, res) => {
-  const { email, password } = req.body;
+// 🔑 Login user
+router.post('/login', async (req, res) => {
+  try {
+    const { email, password } = req.body;
 
-  // Find user
-  const user = users.find(u => u.email === email && u.password === password);
-  
-  if (!user) {
-    return res.json({
+    // Find user in database
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.json({
+        success: false,
+        message: 'User not found with this email'
+      });
+    }
+
+    // Check password
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      return res.json({
+        success: false,
+        message: 'Invalid password'
+      });
+    }
+
+    // Create JWT token
+    const token = jwt.sign(
+      { userId: user._id, email: user.email },
+      process.env.JWT_SECRET,
+      { expiresIn: '7d' }
+    );
+
+    res.json({
+      success: true,
+      message: 'Login successful',
+      data: {
+        user: {
+          id: user._id,
+          email: user.email,
+          name: user.name,
+          role: user.userType, // Use userType from model
+          department: user.department,
+          location: user.location
+        },
+        token: token
+      }
+    });
+
+  } catch (error) {
+    console.error('Login error:', error);
+    res.status(500).json({
       success: false,
-      message: 'Wrong email or password'
+      message: 'Server error during login'
     });
   }
-
-  // Create simple token
-  const token = 'token_' + Date.now() + '_' + user.id;
-
-  res.json({
-    success: true,
-    message: 'Login successful',
-    data: {
-      user: {
-        id: user.id,
-        email: user.email,
-        name: user.name,
-        role: user.role,
-        department: user.department,
-        location: user.location
-      },
-      token: token
-    }
-  });
 });
 
 module.exports = router;
