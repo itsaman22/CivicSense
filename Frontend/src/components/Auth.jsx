@@ -75,7 +75,8 @@ const Auth = ({ show, onHide, onLogin }) => {
     setMessage({ type: '', text: '' });
 
     try {
-      const endpoint = isLogin ? '/api/auth/login' : '/api/auth/register';
+      const baseUrl = 'https://civicsense-backend-9oc8.onrender.com';
+      const endpoint = isLogin ? `${baseUrl}/api/auth/login` : `${baseUrl}/api/auth/register`;
       const payload = isLogin 
         ? { email: formData.email, password: formData.password }
         : {
