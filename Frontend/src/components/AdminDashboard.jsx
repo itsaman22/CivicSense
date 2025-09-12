@@ -13,7 +13,7 @@ const AdminDashboard = ({ user, onLogout }) => {
     try {
       setLoading(true);
       const token = localStorage.getItem('authToken');
-      const response = await fetch('http://localhost:5000/api/issues', {
+      const response = await fetch('https://civicsense-backend-9oc8.onrender.com/api/issues', {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -46,7 +46,7 @@ const AdminDashboard = ({ user, onLogout }) => {
       const token = localStorage.getItem('authToken');
       const newStatus = currentStatus === 'Resolved' ? 'Open' : 'Resolved';
       
-      const response = await fetch(`http://localhost:5000/api/issues/${issueId}/status`, {
+      const response = await fetch(`https://civicsense-backend-9oc8.onrender.com/api/issues/${issueId}/status`, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,

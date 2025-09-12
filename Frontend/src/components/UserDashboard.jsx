@@ -48,7 +48,7 @@ const UserDashboard = ({ user, onLogout }) => {
   const fetchIssues = async () => {
     try {
       const token = localStorage.getItem('authToken');
-      const response = await fetch('http://localhost:5000/api/issues', {
+      const response = await fetch('https://civicsense-backend-9oc8.onrender.com/api/issues', {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -166,7 +166,7 @@ const UserDashboard = ({ user, onLogout }) => {
   const handleUpvote = async (issueId) => {
     try {
       const token = localStorage.getItem('authToken');
-      const response = await fetch(`http://localhost:5000/api/issues/${issueId}/upvote`, {
+      const response = await fetch(`https://civicsense-backend-9oc8.onrender.com/api/issues/${issueId}/upvote`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -189,7 +189,7 @@ const UserDashboard = ({ user, onLogout }) => {
   const handleDownvote = async (issueId) => {
     try {
       const token = localStorage.getItem('authToken');
-      const response = await fetch(`http://localhost:5000/api/issues/${issueId}/downvote`, {
+      const response = await fetch(`https://civicsense-backend-9oc8.onrender.com/api/issues/${issueId}/downvote`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -212,7 +212,7 @@ const UserDashboard = ({ user, onLogout }) => {
   const handleReportIssue = async (issueId) => {
     try {
       const token = localStorage.getItem('authToken');
-      const response = await fetch(`http://localhost:5000/api/issues/${issueId}/report`, {
+      const response = await fetch(`https://civicsense-backend-9oc8.onrender.com/api/issues/${issueId}/report`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -241,7 +241,7 @@ const UserDashboard = ({ user, onLogout }) => {
 
     try {
       const token = localStorage.getItem('authToken');
-      const response = await fetch(`http://localhost:5000/api/issues/${issueId}/comment`, {
+      const response = await fetch(`https://civicsense-backend-9oc8.onrender.com/api/issues/${issueId}/comment`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -446,7 +446,7 @@ const UserDashboard = ({ user, onLogout }) => {
 
     try {
       const token = localStorage.getItem('authToken');
-      const response = await fetch('http://localhost:5000/api/issues', {
+      const response = await fetch('https://civicsense-backend-9oc8.onrender.com/api/issues', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
