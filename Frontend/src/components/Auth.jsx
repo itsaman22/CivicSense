@@ -16,7 +16,16 @@ const Auth = ({ show, onHide, onLogin }) => {
       pincode: ''
     },
     department: '',
-    designation: ''
+    designation: '',
+    // Admin jurisdiction fields
+    adminJurisdiction: {
+      address: '',
+      city: '',
+      state: '',
+      pincode: '',
+      coordinates: { latitude: null, longitude: null },
+      serviceRadius: 10
+    }
   });
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState({ type: '', text: '' });
@@ -61,6 +70,15 @@ const Auth = ({ show, onHide, onLogin }) => {
           [locationField]: value
         }
       }));
+    } else if (name.startsWith('adminJurisdiction.')) {
+      const jurisdictionField = name.split('.')[1];
+      setFormData(prev => ({
+        ...prev,
+        adminJurisdiction: {
+          ...prev.adminJurisdiction,
+          [jurisdictionField]: value
+        }
+      }));
     } else {
       setFormData(prev => ({
         ...prev,
@@ -89,7 +107,8 @@ const Auth = ({ show, onHide, onLogin }) => {
               location: formData.location
             } : {
               department: formData.department,
-              designation: formData.designation
+              designation: formData.designation,
+              adminJurisdiction: formData.adminJurisdiction
             })
           };
 
@@ -141,7 +160,15 @@ const Auth = ({ show, onHide, onLogin }) => {
         pincode: ''
       },
       department: '',
-      designation: ''
+      designation: '',
+      adminJurisdiction: {
+        address: '',
+        city: '',
+        state: '',
+        pincode: '',
+        coordinates: { latitude: null, longitude: null },
+        serviceRadius: 10
+      }
     });
     setMessage({ type: '', text: '' });
   };
@@ -397,6 +424,86 @@ const Auth = ({ show, onHide, onLogin }) => {
                     placeholder="e.g., Assistant Engineer, Officer, etc."
                     required
                   />
+                </div>
+
+                {/* Admin Jurisdiction/Service Area */}
+                <h4 className="section-title">📍 Your Service Area/Jurisdiction</h4>
+                <p className="section-description">
+                  You will only see and manage issues from this area
+                </p>
+                
+                <div className="form-group">
+                  <label className="form-label">Office/Service Address</label>
+                  <input
+                    type="text"
+                    name="adminJurisdiction.address"
+                    value={formData.adminJurisdiction.address}
+                    onChange={handleInputChange}
+                    className="form-input"
+                    placeholder="Enter your office address or service area"
+                    required
+                  />
+                </div>
+
+                <div className="form-row">
+                  <div className="form-group">
+                    <label className="form-label">City</label>
+                    <input
+                      type="text"
+                      name="adminJurisdiction.city"
+                      value={formData.adminJurisdiction.city}
+                      onChange={handleInputChange}
+                      className="form-input"
+                      placeholder="City"
+                      required
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label">State</label>
+                    <select
+                      name="adminJurisdiction.state"
+                      value={formData.adminJurisdiction.state}
+                      onChange={handleInputChange}
+                      className="form-select"
+                      required
+                    >
+                      <option value="">Select State</option>
+                      {indianStates.map(state => (
+                        <option key={state} value={state}>{state}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                <div className="form-row">
+                  <div className="form-group">
+                    <label className="form-label">Pincode</label>
+                    <input
+                      type="text"
+                      name="adminJurisdiction.pincode"
+                      value={formData.adminJurisdiction.pincode}
+                      onChange={handleInputChange}
+                      className="form-input"
+                      placeholder="Service area pincode"
+                      pattern="[0-9]{6}"
+                      required
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label">Service Radius (km)</label>
+                    <select
+                      name="adminJurisdiction.serviceRadius"
+                      value={formData.adminJurisdiction.serviceRadius}
+                      onChange={handleInputChange}
+                      className="form-select"
+                    >
+                      <option value={5}>5 km</option>
+                      <option value={10}>10 km</option>
+                      <option value={15}>15 km</option>
+                      <option value={20}>20 km</option>
+                      <option value={50}>50 km (District Level)</option>
+                    </select>
+                  </div>
                 </div>
               </div>
             )}

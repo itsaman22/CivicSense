@@ -9,7 +9,7 @@ const router = express.Router();
 // 📝 Register new user
 router.post('/register', async (req, res) => {
   try {
-    const { email, password, name, userType, department, location } = req.body;
+    const { email, password, name, userType, department, location, designation, adminJurisdiction } = req.body;
 
     // Check if user already exists
     const existingUser = await User.findOne({ email });
@@ -30,7 +30,9 @@ router.post('/register', async (req, res) => {
       name: name,
       userType: userType || 'user', // Use userType to match model
       department: department || null, // for admin users
-      location: location || null // for regular users
+      designation: designation || null, // for admin users
+      location: location || null, // for regular users
+      adminJurisdiction: adminJurisdiction || null // for admin users - their service area
     });
 
     // Save user to database
@@ -53,7 +55,9 @@ router.post('/register', async (req, res) => {
           name: savedUser.name,
           role: savedUser.userType, // Use userType from model
           department: savedUser.department,
-          location: savedUser.location
+          designation: savedUser.designation,
+          location: savedUser.location,
+          adminJurisdiction: savedUser.adminJurisdiction
         },
         token: token
       }
@@ -108,7 +112,9 @@ router.post('/login', async (req, res) => {
           name: user.name,
           role: user.userType, // Use userType from model
           department: user.department,
-          location: user.location
+          designation: user.designation,
+          location: user.location,
+          adminJurisdiction: user.adminJurisdiction
         },
         token: token
       }

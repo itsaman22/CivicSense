@@ -64,6 +64,43 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: false
   },
+
+  // For admin users - their jurisdiction/service area
+  adminJurisdiction: {
+    address: {
+      type: String,
+      required: function() {
+        return this.userType === 'admin';
+      }
+    },
+    city: {
+      type: String,
+      required: function() {
+        return this.userType === 'admin';
+      }
+    },
+    state: {
+      type: String,
+      required: function() {
+        return this.userType === 'admin';
+      }
+    },
+    pincode: {
+      type: String,
+      required: function() {
+        return this.userType === 'admin';
+      }
+    },
+    coordinates: {
+      latitude: Number,
+      longitude: Number
+    },
+    // Service radius in kilometers (optional)
+    serviceRadius: {
+      type: Number,
+      default: 10 // 10km default radius
+    }
+  },
   
   // Account status
   isActive: {

@@ -264,6 +264,17 @@
   gap: var(--space-2);
 }
 
+.section-description {
+  color: var(--gray-600);
+  font-size: var(--text-sm);
+  margin-bottom: var(--space-4);
+  margin-top: -var(--space-2);
+  padding: var(--space-3);
+  background: var(--blue-50);
+  border-radius: var(--rounded-md);
+  border-left: 3px solid var(--blue-500);
+}
+
 .form-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
