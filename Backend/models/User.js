@@ -40,7 +40,16 @@ const userSchema = new mongoose.Schema({
     address: String,
     city: String,
     state: String,
-    pincode: String
+    pincode: String,
+    coordinates: {
+      latitude: Number,
+      longitude: Number
+    },
+    // Service radius in kilometers (optional)
+    serviceRadius: {
+      type: Number,
+      default: 5 // 5km default radius for regular users
+    }
   },
   
   // For admin users - their department

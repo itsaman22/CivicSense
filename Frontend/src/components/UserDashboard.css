@@ -5,6 +5,41 @@
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
 }
 
+/* Location Info Banner */
+.location-info-banner {
+  background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.location-info-content {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  color: white;
+}
+
+.location-icon {
+  font-size: 1.5rem;
+  opacity: 0.9;
+}
+
+.location-text {
+  flex: 1;
+}
+
+.location-text strong {
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.location-text small {
+  opacity: 0.9;
+  font-size: 0.875rem;
+}
+
 /* Header */
 .dashboard-header {
   background: rgba(255, 255, 255, 0.95);

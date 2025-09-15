@@ -44,6 +44,10 @@ const UserDashboard = ({ user, onLogout }) => {
     'Other'
   ];
 
+  // State for location filtering info
+  const [locationInfo, setLocationInfo] = useState(null);
+  const [totalIssues, setTotalIssues] = useState(0);
+
   // Fetch all issues
   const fetchIssues = async () => {
     try {
@@ -58,6 +62,14 @@ const UserDashboard = ({ user, onLogout }) => {
       const data = await response.json();
       if (data.success) {
         setIssues(data.data.issues);
+        setTotalIssues(data.data.total);
+        
+        // Store location filtering information
+        if (data.data.userLocation) {
+          setLocationInfo(data.data.userLocation);
+        } else if (data.data.originalTotal) {
+          setTotalIssues(data.data.originalTotal);
+        }
       }
     } catch (error) {
       console.error('Error fetching issues:', error);
@@ -552,6 +564,24 @@ const UserDashboard = ({ user, onLogout }) => {
         {activeTab === 'browse' && (
           <div className="browse-issues">
             <h2>Community Issues</h2>
+            
+            {/* Location Info Banner */}
+            {locationInfo && (
+              <div className="location-info-banner">
+                <div className="location-info-content">
+                  <div className="location-icon">📍</div>
+                  <div className="location-text">
+                    <strong>Your Area:</strong> {locationInfo.city}, {locationInfo.state}
+                    <br />
+                    <small>
+                      Showing issues within {locationInfo.serviceRadius}km of your location 
+                      ({issues.length} of {totalIssues} total issues)
+                    </small>
+                  </div>
+                </div>
+              </div>
+            )}
+            
             {loading ? (
               <div className="loading">Loading issues...</div>
             ) : (

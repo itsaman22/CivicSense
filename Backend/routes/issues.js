@@ -67,6 +67,61 @@ const filterIssuesByJurisdiction = (issues, adminJurisdiction) => {
   });
 };
 
+// 👤 Filter issues for regular user based on location proximity
+const filterIssuesByUserLocation = (issues, userLocation) => {
+  if (!userLocation) {
+    console.log('⚠️ User has no location data - showing all issues');
+    return issues;
+  }
+
+  const { city, state, pincode, coordinates, serviceRadius = 5 } = userLocation;
+  console.log(`🔍 Filtering issues for user location: ${city}, ${state} (serviceRadius: ${serviceRadius}km)`);
+  
+  return issues.filter(issue => {
+    if (!issue.location) {
+      console.log(`❌ Excluding "${issue.title}" - No location data`);
+      return false;
+    }
+    
+    // Priority 1: Exact city and state match
+    if (issue.location.city && issue.location.state && city && state) {
+      if (issue.location.city.toLowerCase() === city.toLowerCase() && 
+          issue.location.state.toLowerCase() === state.toLowerCase()) {
+        console.log(`✅ Including "${issue.title}" - City/State match`);
+        return true;
+      }
+    }
+    
+    // Priority 2: Distance-based filtering (if both have coordinates)
+    if (coordinates?.latitude && coordinates?.longitude && 
+        issue.location.coordinates?.latitude && issue.location.coordinates?.longitude) {
+      const distance = calculateDistance(
+        coordinates.latitude, coordinates.longitude,
+        issue.location.coordinates.latitude, issue.location.coordinates.longitude
+      );
+      
+      if (distance <= serviceRadius) {
+        console.log(`✅ Including "${issue.title}" - Distance match (${distance.toFixed(2)}km)`);
+        return true;
+      } else {
+        console.log(`❌ Excluding "${issue.title}" - Too far (${distance.toFixed(2)}km > ${serviceRadius}km)`);
+        return false;
+      }
+    }
+    
+    // Priority 3: Pincode match (fallback)
+    if (issue.location.pincode && pincode) {
+      if (issue.location.pincode === pincode) {
+        console.log(`✅ Including "${issue.title}" - Pincode match`);
+        return true;
+      }
+    }
+    
+    console.log(`❌ Excluding "${issue.title}" - No matching criteria`);
+    return false;
+  });
+};
+
 // 📋 Get all issues (with admin jurisdiction filtering)
 router.get('/', checkLogin, async (req, res) => {
   try {
@@ -76,29 +131,51 @@ router.get('/', checkLogin, async (req, res) => {
       .populate('comments.user', 'name email')
       .sort({ createdAt: -1 });
     
-    // Filter issues based on user type and jurisdiction
+    // Filter issues based on user type and location
     let filteredIssues = allIssues;
+    let filterMessage = 'Issues retrieved successfully';
+    let locationInfo = {};
     
     if (req.user.userType === 'admin') {
       if (req.user.adminJurisdiction && req.user.adminJurisdiction.city) {
         console.log(`🏛️ Filtering issues for admin ${req.user.name} in ${req.user.adminJurisdiction.city}, ${req.user.adminJurisdiction.state}`);
         filteredIssues = filterIssuesByJurisdiction(allIssues, req.user.adminJurisdiction);
         console.log(`📊 Filtered ${allIssues.length} issues down to ${filteredIssues.length} for admin jurisdiction`);
+        filterMessage = 'Issues retrieved for your jurisdiction';
+        locationInfo = { 
+          jurisdiction: req.user.adminJurisdiction,
+          originalTotal: allIssues.length 
+        };
       } else {
         console.log('⚠️ Admin has no jurisdiction data - showing all issues');
+      }
+    } else {
+      // Regular user - filter by location proximity
+      if (req.user.location) {
+        console.log(`👤 Filtering issues for user ${req.user.name} at ${req.user.location.city}, ${req.user.location.state}`);
+        filteredIssues = filterIssuesByUserLocation(allIssues, req.user.location);
+        console.log(`📊 Filtered ${allIssues.length} issues down to ${filteredIssues.length} for user location`);
+        filterMessage = 'Issues retrieved for your area';
+        locationInfo = {
+          userLocation: {
+            city: req.user.location.city,
+            state: req.user.location.state,
+            serviceRadius: req.user.location.serviceRadius || 5
+          },
+          originalTotal: allIssues.length
+        };
+      } else {
+        console.log('⚠️ User has no location data - showing all issues');
       }
     }
     
     res.json({
       success: true,
-      message: req.user.userType === 'admin' ? 'Issues retrieved for your jurisdiction' : 'Issues retrieved successfully',
+      message: filterMessage,
       data: {
         issues: filteredIssues,
         total: filteredIssues.length,
-        ...(req.user.userType === 'admin' && { 
-          jurisdiction: req.user.adminJurisdiction,
-          originalTotal: allIssues.length 
-        })
+        ...locationInfo
       }
     });
   } catch (error) {
