@@ -8,6 +8,8 @@ const AdminDashboard = ({ user, onLogout }) => {
   const [filter, setFilter] = useState('all');
   const [searchLocation, setSearchLocation] = useState('');
 
+  // Server-side filtering is now handled by the backend API
+
   // Fetch issues from backend
   const fetchIssues = useCallback(async () => {
     try {
@@ -23,9 +25,13 @@ const AdminDashboard = ({ user, onLogout }) => {
       const data = await response.json();
       console.log('Admin fetched issues:', data); // Debug log
       if (data.success) {
-        // Show all issues for now - remove department filtering for testing
+        // Server already filters issues based on admin's jurisdiction
         setIssues(data.data.issues);
-        console.log('Issues set in admin dashboard:', data.data.issues); // Debug log
+        console.log('Received filtered issues from server:', data.data.issues.length, 'issues'); // Debug log
+        if (data.data.jurisdiction) {
+          console.log('Admin jurisdiction info:', data.data.jurisdiction);
+          console.log('Original total issues:', data.data.originalTotal);
+        }
       } else {
         console.error('Failed to fetch issues:', data.message);
       }
@@ -104,6 +110,12 @@ const AdminDashboard = ({ user, onLogout }) => {
             <p className="admin-subtitle">
               Welcome, <strong>{user.name}</strong> | {user.department}
             </p>
+            {user.adminJurisdiction && (
+              <p className="jurisdiction-info">
+                📍 Service Area: {user.adminJurisdiction.city}, {user.adminJurisdiction.state} 
+                ({user.adminJurisdiction.serviceRadius || 10}km radius)
+              </p>
+            )}
           </div>
           <button 
             onClick={onLogout}
