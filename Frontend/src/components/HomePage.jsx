@@ -6,6 +6,39 @@ const HomePage = ({ user, onLoginSuccess, onLogout, onNavigateToDashboard }) => 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showAuth, setShowAuth] = useState(false);
 
+  // Handle smooth scrolling to sections
+  const scrollToSection = (sectionId) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }
+    setIsMenuOpen(false); // Close mobile menu if open
+  };
+
+  // Handle contact form submission
+  const handleContactSubmit = (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const contactData = {
+      name: formData.get('name'),
+      email: formData.get('email'),
+      userType: formData.get('userType'),
+      city: formData.get('city'),
+      subject: formData.get('subject'),
+      message: formData.get('message'),
+      newsletter: formData.get('newsletter'),
+      privacy: formData.get('privacy')
+    };
+    
+    // Here you would typically send this data to your backend
+    console.log('Contact form submitted:', contactData);
+    alert('Thank you for your message! We\'ll get back to you within 24 hours.');
+    e.target.reset();
+  };
+
   // Handle authentication success
   const handleAuthSuccess = (userData, token) => {
     setShowAuth(false); // Close auth modal
@@ -118,10 +151,30 @@ const HomePage = ({ user, onLoginSuccess, onLogout, onNavigateToDashboard }) => 
             </div>
             
             <div className={`nav-links ${isMenuOpen ? 'nav-links-open' : ''}`}>
-              <a href="#issues" className="nav-link">Issues</a>
-              <a href="#impact" className="nav-link">Impact</a>
-              <a href="#about" className="nav-link">About</a>
-              <a href="#contact" className="nav-link">Contact</a>
+              <button 
+                className="nav-link" 
+                onClick={() => scrollToSection('issues')}
+              >
+                Issues
+              </button>
+              <button 
+                className="nav-link" 
+                onClick={() => scrollToSection('impact')}
+              >
+                Impact
+              </button>
+              <button 
+                className="nav-link" 
+                onClick={() => scrollToSection('about')}
+              >
+                About
+              </button>
+              <button 
+                className="nav-link" 
+                onClick={() => scrollToSection('contact')}
+              >
+                Contact
+              </button>
             </div>
 
             <div className="nav-actions">
@@ -341,7 +394,7 @@ const HomePage = ({ user, onLoginSuccess, onLogout, onNavigateToDashboard }) => 
       </section>
 
       {/* Statistics Section */}
-      <section className="section stats-section">
+      <section id="impact" className="section stats-section">
         <div className="container">
           <div className="stats-grid">
             <div className="stat-card">
@@ -400,6 +453,246 @@ const HomePage = ({ user, onLoginSuccess, onLogout, onNavigateToDashboard }) => 
               <span>850+ issues resolved</span>
               <span>•</span>
               <span>25+ cities covered</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* About Section */}
+      <section id="about" className="section about-section">
+        <div className="container">
+          <div className="section-header text-center">
+            <h2>🎯 About CivicSense</h2>
+            <p>Bridging the gap between citizens and government for a better India</p>
+          </div>
+          
+          <div className="about-content">
+            <div className="about-grid">
+              <div className="about-text">
+                <h3>Our Mission</h3>
+                <p>
+                  CivicSense is a revolutionary crowdsourced civic issue reporting system designed to empower 
+                  every Indian citizen to create positive change in their communities. We believe that when 
+                  citizens and government work together, extraordinary transformations happen.
+                </p>
+                
+                <h3>The Problem We're Solving</h3>
+                <p>
+                  Every day, millions of Indians face civic issues - from broken roads that cause 4,000+ deaths 
+                  annually to non-functioning streetlights that compromise safety. Traditional reporting methods 
+                  are slow, inefficient, and often ignored. Citizens feel powerless, and authorities lack 
+                  real-time information about ground realities.
+                </p>
+                
+                <h3>Our Solution</h3>
+                <p>
+                  CivicSense creates a direct, transparent channel between citizens and government authorities. 
+                  Through our platform, citizens can report issues with photo evidence, while government 
+                  administrators can efficiently manage and resolve problems in their jurisdiction. Our 
+                  location-based filtering ensures everyone sees only relevant issues in their area.
+                </p>
+              </div>
+              
+              <div className="about-features">
+                <h3>Why Choose CivicSense?</h3>
+                <div className="feature-list">
+                  <div className="feature-item">
+                    <span className="feature-icon">🎯</span>
+                    <div>
+                      <h4>Targeted Action</h4>
+                      <p>Location-based filtering ensures issues reach the right authorities</p>
+                    </div>
+                  </div>
+                  
+                  <div className="feature-item">
+                    <span className="feature-icon">📸</span>
+                    <div>
+                      <h4>Visual Evidence</h4>
+                      <p>Photo documentation provides clear proof of civic problems</p>
+                    </div>
+                  </div>
+                  
+                  <div className="feature-item">
+                    <span className="feature-icon">👥</span>
+                    <div>
+                      <h4>Community Power</h4>
+                      <p>Voting and commenting system validates and prioritizes issues</p>
+                    </div>
+                  </div>
+                  
+                  <div className="feature-item">
+                    <span className="feature-icon">⚡</span>
+                    <div>
+                      <h4>Real-time Updates</h4>
+                      <p>Track progress from reporting to resolution</p>
+                    </div>
+                  </div>
+                  
+                  <div className="feature-item">
+                    <span className="feature-icon">🔒</span>
+                    <div>
+                      <h4>Secure & Transparent</h4>
+                      <p>JWT authentication with complete transparency in issue tracking</p>
+                    </div>
+                  </div>
+                  
+                  <div className="feature-item">
+                    <span className="feature-icon">🌍</span>
+                    <div>
+                      <h4>Scalable Impact</h4>
+                      <p>From local neighborhoods to entire cities - built to scale</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div className="impact-stats">
+              <h3>Our Impact So Far</h3>
+              <div className="impact-grid">
+                <div className="impact-item">
+                  <span className="impact-number">10,000+</span>
+                  <span className="impact-label">Active Citizens</span>
+                </div>
+                <div className="impact-item">
+                  <span className="impact-number">2,500+</span>
+                  <span className="impact-label">Issues Reported</span>
+                </div>
+                <div className="impact-item">
+                  <span className="impact-number">850+</span>
+                  <span className="impact-label">Issues Resolved</span>
+                </div>
+                <div className="impact-item">
+                  <span className="impact-number">25+</span>
+                  <span className="impact-label">Cities Covered</span>
+                </div>
+                <div className="impact-item">
+                  <span className="impact-number">100+</span>
+                  <span className="impact-label">Government Partners</span>
+                </div>
+                <div className="impact-item">
+                  <span className="impact-number">34%</span>
+                  <span className="impact-label">Average Resolution Rate</span>
+                </div>
+              </div>
+            </div>
+            
+            <div className="vision-section">
+              <h3>Our Vision for India</h3>
+              <p>
+                We envision an India where every citizen is empowered to contribute to their community's 
+                development, where government authorities have real-time access to ground realities, and 
+                where civic issues are resolved efficiently through transparent, technology-driven processes. 
+                Together, we're building a more responsive, accountable, and citizen-centric governance model.
+              </p>
+              
+              <div className="team-note">
+                <h4>Built by Indians, for Indians</h4>
+                <p>
+                  Our team understands the unique challenges of Indian civic infrastructure because we live 
+                  them every day. CivicSense is designed specifically for Indian conditions, government 
+                  structures, and community dynamics.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Contact Section */}
+      <section id="contact" className="section contact-section">
+        <div className="container">
+          <div className="section-header text-center">
+            <h2>📞 Contact Us</h2>
+            <p>Have questions or feedback? We'd love to hear from you!</p>
+          </div>
+          
+          <div className="contact-content">
+            <div className="contact-grid">
+              <div className="contact-info">
+                <h3>Get in Touch</h3>
+                
+                <div className="contact-item">
+                  <span className="contact-icon">📧</span>
+                  <div>
+                    <h4>Email Us</h4>
+                    <p>contact@civicsense.com</p>
+                    <small>We respond within 24 hours</small>
+                  </div>
+                </div>
+                
+                <div className="contact-item">
+                  <span className="contact-icon">💬</span>
+                  <div>
+                    <h4>Send a Message</h4>
+                    <p>Use the contact form</p>
+                    <small>Fill out the form and we'll get back to you</small>
+                  </div>
+                </div>
+                
+                <div className="contact-item">
+                  <span className="contact-icon">🤝</span>
+                  <div>
+                    <h4>Support</h4>
+                    <p>Technical help & feedback</p>
+                    <small>We're here to help with any questions</small>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="contact-form">
+                <h3>Send us a Message</h3>
+                <form className="contact-form-wrapper" onSubmit={handleContactSubmit}>
+                  <div className="form-group">
+                    <label htmlFor="name">Full Name *</label>
+                    <input 
+                      type="text" 
+                      id="name" 
+                      name="name" 
+                      required 
+                      placeholder="Enter your full name"
+                    />
+                  </div>
+                  
+                  <div className="form-group">
+                    <label htmlFor="email">Email Address *</label>
+                    <input 
+                      type="email" 
+                      id="email" 
+                      name="email" 
+                      required 
+                      placeholder="Enter your email address"
+                    />
+                  </div>
+                  
+                  <div className="form-group">
+                    <label htmlFor="subject">Subject *</label>
+                    <select id="subject" name="subject" required>
+                      <option value="">Select a subject</option>
+                      <option value="general">General Question</option>
+                      <option value="technical">Technical Issue</option>
+                      <option value="feedback">Feedback</option>
+                      <option value="suggestion">Suggestion</option>
+                      <option value="other">Other</option>
+                    </select>
+                  </div>
+                  
+                  <div className="form-group">
+                    <label htmlFor="message">Message *</label>
+                    <textarea 
+                      id="message" 
+                      name="message" 
+                      rows="5" 
+                      required 
+                      placeholder="Tell us about your question or feedback..."
+                    ></textarea>
+                  </div>
+                  
+                  <button type="submit" className="btn btn-primary btn-lg">
+                    📤 Send Message
+                  </button>
+                </form>
+              </div>
             </div>
           </div>
         </div>
