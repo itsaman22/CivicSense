@@ -547,36 +547,6 @@ const HomePage = ({ user, onLoginSuccess, onLogout, onNavigateToDashboard }) => 
               </div>
             </div>
             
-            <div className="impact-stats">
-              <h3>Our Impact So Far</h3>
-              <div className="impact-grid">
-                <div className="impact-item">
-                  <span className="impact-number">10,000+</span>
-                  <span className="impact-label">Active Citizens</span>
-                </div>
-                <div className="impact-item">
-                  <span className="impact-number">2,500+</span>
-                  <span className="impact-label">Issues Reported</span>
-                </div>
-                <div className="impact-item">
-                  <span className="impact-number">850+</span>
-                  <span className="impact-label">Issues Resolved</span>
-                </div>
-                <div className="impact-item">
-                  <span className="impact-number">25+</span>
-                  <span className="impact-label">Cities Covered</span>
-                </div>
-                <div className="impact-item">
-                  <span className="impact-number">100+</span>
-                  <span className="impact-label">Government Partners</span>
-                </div>
-                <div className="impact-item">
-                  <span className="impact-number">34%</span>
-                  <span className="impact-label">Average Resolution Rate</span>
-                </div>
-              </div>
-            </div>
-            
             <div className="vision-section">
               <h3>Our Vision for India</h3>
               <p>
