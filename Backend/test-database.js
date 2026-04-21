@@ -1,5 +1,3 @@
-// 🧪 Simple Test Script for MongoDB Atlas Integration
-// Run this to test if your database connection and models are working
 
 const mongoose = require('mongoose');
 require('dotenv').config();

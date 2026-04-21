@@ -26,6 +26,12 @@ const UserDashboard = ({ user, onLogout }) => {
   const [imageError, setImageError] = useState('');
   const [uploadingImages, setUploadingImages] = useState(false);
   
+  // Coin-related state
+  const [showCoinModal, setShowCoinModal] = useState(false);
+  const [coinBalance, setCoinBalance] = useState(0);
+  const [coinHistory, setCoinHistory] = useState([]);
+  const [loadingCoins, setLoadingCoins] = useState(false);
+  
   // Location-related state
   const [locationLoading, setLocationLoading] = useState(false);
   const [locationError, setLocationError] = useState('');
@@ -80,7 +86,51 @@ const UserDashboard = ({ user, onLogout }) => {
 
   useEffect(() => {
     fetchIssues();
+    fetchCoinBalance();
   }, []);
+
+  // Fetch coin balance and history
+  const fetchCoinBalance = async () => {
+    try {
+      const token = localStorage.getItem('authToken');
+      const response = await fetch('https://civicsense-backend-9oc8.onrender.com/api/coins/balance', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      const data = await response.json();
+      if (data.success) {
+        setCoinBalance(data.coins || 0);
+      }
+    } catch (error) {
+      console.error('Error fetching coin balance:', error);
+    }
+  };
+
+  // Fetch coin history
+  const fetchCoinHistory = async () => {
+    setLoadingCoins(true);
+    try {
+      const token = localStorage.getItem('authToken');
+      const response = await fetch('https://civicsense-backend-9oc8.onrender.com/api/coins/history', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      const data = await response.json();
+      if (data.success) {
+        setCoinHistory(data.history || []);
+      }
+    } catch (error) {
+      console.error('Error fetching coin history:', error);
+    } finally {
+      setLoadingCoins(false);
+    }
+  };
 
   // Cleanup timeout on component unmount
   useEffect(() => {
@@ -530,6 +580,16 @@ const UserDashboard = ({ user, onLogout }) => {
         <div className="header-content">
           <h1>🏛️ CivicSense - User Dashboard</h1>
           <div className="user-info">
+            <button 
+              className="coin-button"
+              onClick={() => {
+                setShowCoinModal(true);
+                fetchCoinHistory();
+              }}
+              title="View coin balance and earn options"
+            >
+              🪙 {coinBalance} Coins
+            </button>
             <span>Welcome, {user.name}!</span>
             <button className="logout-btn" onClick={onLogout}>Logout</button>
           </div>
@@ -596,6 +656,24 @@ const UserDashboard = ({ user, onLogout }) => {
                     </div>
                     
                     <p className="issue-description">{issue.description}</p>
+                    
+                    {/* Image Gallery */}
+                    {issue.images && issue.images.length > 0 && (
+                      <div className="image-gallery">
+                        <div className="images-grid">
+                          {issue.images.map((image, idx) => (
+                            <img 
+                              key={idx} 
+                              src={`data:${image.mimetype};base64,${image.data}`}
+                              alt={image.filename || `Image ${idx + 1}`}
+                              className="gallery-image"
+                              title={image.filename}
+                            />
+                          ))}
+                        </div>
+                        <small className="image-count">📸 {issue.images.length} image{issue.images.length > 1 ? 's' : ''}</small>
+                      </div>
+                    )}
                     
                     <div className="issue-meta">
                       <span className="category">📂 {issue.category}</span>
@@ -827,6 +905,24 @@ const UserDashboard = ({ user, onLogout }) => {
                     
                     <p className="issue-description">{issue.description}</p>
                     
+                    {/* Image Gallery */}
+                    {issue.images && issue.images.length > 0 && (
+                      <div className="image-gallery">
+                        <div className="images-grid">
+                          {issue.images.map((image, idx) => (
+                            <img 
+                              key={idx} 
+                              src={`data:${image.mimetype};base64,${image.data}`}
+                              alt={image.filename || `Image ${idx + 1}`}
+                              className="gallery-image"
+                              title={image.filename}
+                            />
+                          ))}
+                        </div>
+                        <small className="image-count">📸 {issue.images.length} image{issue.images.length > 1 ? 's' : ''}</small>
+                      </div>
+                    )}
+                    
                     <div className="issue-meta">
                       <span className="category">📂 {issue.category}</span>
                       <span className="location">📍 {issue.location.address || issue.location}</span>
@@ -900,6 +996,124 @@ const UserDashboard = ({ user, onLogout }) => {
               >
                 Report Issue
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Coin Modal */}
+      {showCoinModal && (
+        <div className="modal-overlay">
+          <div className="modal coin-modal">
+            <div className="modal-header">
+              <h3>🪙 Coin Center</h3>
+              <button onClick={() => setShowCoinModal(false)}>✕</button>
+            </div>
+            
+            <div className="modal-content coin-content">
+              {/* Coin Balance Section */}
+              <div className="coin-balance-section">
+                <div className="coin-balance-display">
+                  <span className="coin-icon">🪙</span>
+                  <div className="balance-info">
+                    <h2>{coinBalance}</h2>
+                    <p>Total Coins</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Tabs in Modal */}
+              <div className="coin-modal-tabs">
+                <button className="coin-tab active">📊 History</button>
+                <button className="coin-tab">💡 How to Earn</button>
+                <button className="coin-tab">🎁 Redeem</button>
+              </div>
+
+              {/* History Tab */}
+              <div className="coin-tab-content">
+                <h3>Transaction History</h3>
+                {loadingCoins ? (
+                  <p className="loading">Loading history...</p>
+                ) : coinHistory && coinHistory.length > 0 ? (
+                  <div className="history-list">
+                    {coinHistory.map((transaction, idx) => (
+                      <div key={idx} className="history-item">
+                        <div className="history-icon">
+                          {transaction.transactionType === 'reward' ? '✅' : '🎁'}
+                        </div>
+                        <div className="history-details">
+                          <p className="history-description">{transaction.description}</p>
+                          <small className="history-date">
+                            {new Date(transaction.createdAt).toLocaleDateString('en-US', {
+                              year: 'numeric',
+                              month: 'short',
+                              day: 'numeric',
+                              hour: '2-digit',
+                              minute: '2-digit'
+                            })}
+                          </small>
+                        </div>
+                        <div className={`history-coins ${transaction.coinsEarned > 0 ? 'positive' : 'negative'}`}>
+                          {transaction.coinsEarned > 0 ? '+' : ''}{transaction.coinsEarned}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="no-history">No transactions yet</p>
+                )}
+              </div>
+
+              {/* How to Earn Section */}
+              <div className="coin-earn-section">
+                <h3>💡 Ways to Earn Coins</h3>
+                <div className="earn-list">
+                  <div className="earn-item">
+                    <span className="earn-icon">📝</span>
+                    <div className="earn-details">
+                      <h4>Post an Issue</h4>
+                      <p>Share a civic issue with details and photos</p>
+                      <span className="earn-reward">+5 coins</span>
+                    </div>
+                  </div>
+
+                  <div className="earn-item">
+                    <span className="earn-icon">✅</span>
+                    <div className="earn-details">
+                      <h4>Issue Gets Resolved</h4>
+                      <p>When your reported issue is resolved by authorities</p>
+                      <span className="earn-reward">+10 coins</span>
+                    </div>
+                  </div>
+
+                  <div className="earn-item">
+                    <span className="earn-icon">👍</span>
+                    <div className="earn-details">
+                      <h4>Community Engagement</h4>
+                      <p>Comment on issues and help the community</p>
+                      <span className="earn-reward">+1 per comment</span>
+                    </div>
+                  </div>
+
+                  <div className="earn-item">
+                    <span className="earn-icon">🔍</span>
+                    <div className="earn-details">
+                      <h4>Report Daily</h4>
+                      <p>Log in daily and report issues</p>
+                      <span className="earn-reward">+2 daily bonus</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Redeem Section */}
+              <div className="coin-redeem-section">
+                <h3>🎁 Redeem Coins</h3>
+                <p className="redeem-description">Use your coins to get exclusive vouchers and discounts from partnered merchants!</p>
+                <button className="redeem-btn">
+                  Go to Voucher Marketplace →
+                </button>
+              </div>
             </div>
           </div>
         </div>

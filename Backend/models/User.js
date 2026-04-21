@@ -116,6 +116,13 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: true
   },
+
+  // Coin rewards system
+  coins: {
+    type: Number,
+    default: 0, // All new users start with 0, but will receive 10 on registration
+    min: 0
+  },
   
   // Automatically add creation date
   createdAt: {

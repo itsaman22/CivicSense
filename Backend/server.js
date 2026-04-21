@@ -23,6 +23,11 @@ const userRoutes = require('./routes/users');
 const categoryRoutes = require('./routes/categories');
 const adminRoutes = require('./routes/admin');
 
+// Import models to register schemas with Mongoose
+const User = require('./models/User');
+const Issue = require('./models/Issue');
+const CoinHistory = require('./models/CoinHistory');
+
 // Use routes
 app.use('/api/auth', authRoutes);
 app.use('/api/issues', issueRoutes);
